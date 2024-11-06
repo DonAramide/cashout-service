@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  cashout-service-redis:
+    container_name: cashout-service-redis
+    image: redis:latest
+    ports:
+      - "6385:6385"
+  cashout-service:
+    container_name: cashout-service
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      - ./:/var/www/html
+      - /var/www/app/vendor
+    depends_on:
+      - cashout-service-redis
+
+networks:
+  default:
+    name: cashout-core-network
+    external: true
